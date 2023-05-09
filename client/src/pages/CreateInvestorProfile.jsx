@@ -51,7 +51,7 @@ const CreateInvestor = ({ setUserByToken }) => {
         const res = await createUser(values);
         setUserByToken(res.data.token);
         setLoading(false);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     setLoading(true);
@@ -78,7 +78,7 @@ const CreateInvestor = ({ setUserByToken }) => {
           confirmPassword: "password123",
         }}
         onFinish={onFinish}
-        onFinishFailed={() => {}}
+        onFinishFailed={() => { }}
         autoComplete="off"
         ref={formRef}
       >
@@ -92,6 +92,14 @@ const CreateInvestor = ({ setUserByToken }) => {
         <Form.Item
           label="Email"
           name={"email"}
+          rules={[{ required: true, message: "This field is required" }]}
+        >
+          <Input></Input>
+        </Form.Item>
+
+        <Form.Item
+          label="wallet Address"
+          name={"walletAddress"}
           rules={[{ required: true, message: "This field is required" }]}
         >
           <Input></Input>

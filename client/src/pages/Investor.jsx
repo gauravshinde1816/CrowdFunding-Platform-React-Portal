@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Radio, Space, Table, Tag, Avatar, Divider, Spin, Button } from "antd";
 import { Descriptions } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { getSpendingRequestForInvestor } from "../config/Requests";
+import { useSpendingRequestContext } from "../context"
+import { getSpendingRequestForInvestor, upvoteSpendingRequest, downvoteSpendingRequest } from "../config/Requests";
 import { formatDateWithYear } from "../config/Constants";
+import axios from "axios";
 
 const calculatetotalinvestment = (data) => {
   let sum = 0;
@@ -16,13 +18,30 @@ const Investor = ({ investorId, user }) => {
   const [spendingRequests, setSpendingRequests] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const { GetDBID, voteSP } = useSpendingRequestContext()
+
+  const upvote = async (id) => {
+    const res = await upvoteSpendingRequest(id);
+    const SP = await GetDBID(id)
+    const up = await voteSP(SP.pId, user.user.walletAddress)
+    console.log(up)
+  }
+
+  const downvote = async (id) => {
+    const res = await downvoteSpendingRequest(id)
+  }
+
+
   useEffect(() => {
     async function getSpendingRequests() {
+      // console.log("GET SP "  ,investorId)
+      setLoading(true)
       const res = await getSpendingRequestForInvestor();
       setLoading(false);
       setSpendingRequests(res.data);
+      console.log("RES  ", res)
     }
-    setLoading(true);
+    // setLoading(true);
     getSpendingRequests();
   }, [investorId]);
 
@@ -34,31 +53,30 @@ const Investor = ({ investorId, user }) => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Start up Name",
-      dataIndex: "startupName",
-      key: "startupName",
+      title: "title",
+      dataIndex: "title",
+      key: "title",
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Campaign Manager Name",
-      dataIndex: "cmName",
-      key: "cmName",
+      title: "productDetails",
+      dataIndex: "productDetails",
+      key: "productDetails",
+      render: (text) => <a>{text}</a>,
     },
     {
-      title: "Vendor Name",
-      dataIndex: "vName",
-      key: "vName",
-    },
-    {
-      title: "Amount to be raised",
+      title: "amount",
       dataIndex: "amount",
       key: "amount",
+      render: (text) => <a>{text}</a>,
     },
     {
-      title: "Total Amount Raised",
-      dataIndex: "tamount",
-      key: "tamount",
+      title: "totalAmountRaised",
+      dataIndex: "totalAmountRaised",
+      key: "totalAmountRaised",
+      render: (text) => <a>{text}</a>,
     },
+
     {
       title: "Approvals",
       dataIndex: "approvals",
@@ -78,12 +96,18 @@ const Investor = ({ investorId, user }) => {
     {
       title: "Action",
       key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <Button className="bg-cyan-500 text-white">Accept</Button>
-          <Button className="bg-red-400 text-white">Reject</Button>
-        </Space>
-      ),
+      render: (_, record) => {
+        const isPresent = record.votes.find((ele) => ele.user === record.user)
+        console.log(record)
+
+        return (
+          <Space size="middle">
+            <Button disabled={isPresent} onClick={() => upvote(record._id)} className="bg-cyan-500 text-white">Accept</Button>
+            <Button onClick={() => downvote(record._id)} className="bg-red-400 text-white">Reject</Button>
+          </Space>
+        )
+      }
+      ,
     },
   ];
 
