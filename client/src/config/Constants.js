@@ -1,6 +1,7 @@
 import moment from "moment";
 
 export const USER_TYPE_INVESTOR = "INVESTOR";
+export const USER_TYPE_ADMIN = "ADMIN";
 export const USER_TYPE_VENDOR = "VENDOR";
 export const USER_TYPE_IDEAPERSON = "IDEAPERSON";
 

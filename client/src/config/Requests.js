@@ -6,26 +6,28 @@ const backend = axios.create({
 
 const tokenKey = "auth-token-34";
 
-const authHeaders = {
-  headers: {
-    Authorization: localStorage.getItem(tokenKey),
-  },
+const authHeaders = () => {
+  return {
+    headers: {
+      Authorization: localStorage.getItem(tokenKey),
+    },
+  };
 };
 
 export const getAllStartups = () => backend.get("/startups");
 export const getStartupsForManager = () =>
-  backend.get("/startups/me", authHeaders);
+  backend.get("/startups/me", authHeaders());
 export const getStartupById = (id) => backend.get("/startups/" + id);
 export const getInvestments = () =>
-  backend.get("/investments/investor", authHeaders);
+  backend.get("/investments/investor", authHeaders());
 export const createUser = (data) => backend.post("/users", data);
 export const createStartup = (data) =>
-  backend.post("/startups", data, authHeaders);
+  backend.post("/startups", data, authHeaders());
 export const getAllSpendingRequests = () => backend.get("/spendingrequest");
 export const getAllSpendingRequestsForManager = () =>
-  backend.get("/spendingrequest/me", authHeaders);
+  backend.get("/spendingrequest/me", authHeaders());
 export const createSpendingRequest = (data) =>
-  backend.post("/spendingrequest/" + data.startupId, data, authHeaders);
+  backend.post("/spendingrequest/" + data.startupId, data, authHeaders());
 
 export const getSpendingRequestForStartups = (startupId) =>
   backend.get("/spendingrequest/byStartup/" + startupId);
@@ -44,8 +46,8 @@ export const invest = (data) =>
     data,
     authHeaders
   );
-export const getSpendingRequestForInvestor = () =>{
-  console.log(authHeaders)
-  backend.get("/spendingrequest/byInvestor", authHeaders);
-}
+export const getSpendingRequestForInvestor = () =>
+  backend.get("/spendingrequest/byInvestor", authHeaders());
 
+export const getSpendingRequestForAdmin = () =>
+  backend.get("/admin/spendingRequests", authHeaders());

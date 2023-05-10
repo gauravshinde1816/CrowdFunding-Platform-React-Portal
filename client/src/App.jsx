@@ -1,18 +1,35 @@
 import "./App.css";
 import { Button, Layout, Menu, Spin } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
-import CustomButton from "./components/CustomButton"
-import { useStateContext } from "./context"
+import CustomButton from "./components/CustomButton";
+import { useStateContext } from "./context";
 import { loginWithToken } from "./config/Requests";
 import Sider from "antd/es/layout/Sider";
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { ManagerProfile, Login, CreateCampaignManager, Welcome, CreateInvestorProfile, CreateVendor as Vendor, MyInvestments, Investor, StartupDetails, CreateSpendingRequest, Home, CreateStartup, VendorProfile } from './pages';
 import {
+  ManagerProfile,
+  Login,
+  CreateCampaignManager,
+  Welcome,
+  CreateInvestorProfile,
+  CreateVendor as Vendor,
+  MyInvestments,
+  Investor,
+  StartupDetails,
+  CreateSpendingRequest,
+  Home,
+  CreateStartup,
+  VendorProfile,
+} from "./pages";
+import {
+  USER_TYPE_ADMIN,
   USER_TYPE_IDEAPERSON,
   USER_TYPE_INVESTOR,
   USER_TYPE_VENDOR,
 } from "./config/Constants";
+import CreateAdmin from "./pages/CreateAdmin";
+import AdminProfile from "./pages/AdminProfile";
 
 function App() {
   const navigate = useNavigate();
@@ -26,11 +43,9 @@ function App() {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const { address, connect } = useStateContext()
+  const { address, connect } = useStateContext();
 
   const setUserByToken = async (token) => {
-    console.log("Set Token")
-
     setLoading(true);
     try {
       const res = await loginWithToken(token);
@@ -38,7 +53,7 @@ function App() {
       setLoggedIn(true);
       localStorage.setItem(tokenKey, token);
       navigate("/");
-    } catch (e) { }
+    } catch (e) {}
     setLoading(false);
   };
 
@@ -81,6 +96,15 @@ function App() {
             label: "Vendor Profile",
             key: "vendorProfile",
             link: "/vendorProfile",
+          },
+        ]);
+      } else if (user.userType == USER_TYPE_ADMIN) {
+        setNavBar([
+          ...initialNavbarData,
+          {
+            label: "Admin Profile",
+            key: "adminProfile",
+            link: "/adminProfile",
           },
         ]);
       }
@@ -154,11 +178,11 @@ function App() {
                 <div></div>
                 <CustomButton
                   btnType="button"
-                  title={address ? 'Wallet Connected' : 'Connect'}
-                  styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
+                  title={address ? "Wallet Connected" : "Connect"}
+                  styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
                   handleClick={() => {
-                    if (address) navigate('/')
-                    else connect()
+                    if (address) navigate("/");
+                    else connect();
                   }}
                 />
                 <Button className=" bg-red-500 text-white" onClick={logout}>
@@ -204,6 +228,10 @@ function App() {
                   path="/vendorProfile"
                   element={<VendorProfile></VendorProfile>}
                 ></Route>
+                <Route
+                  path="/adminProfile"
+                  element={<AdminProfile user={user}></AdminProfile>}
+                ></Route>
               </Routes>
             </Content>
             {/* <Footer style={{ textAlign: "center" }}>
@@ -236,6 +264,10 @@ function App() {
               }
             ></Route>
             <Route path="/createVendor" element={<Vendor></Vendor>}></Route>
+            <Route
+              path="/createAdmin"
+              element={<CreateAdmin></CreateAdmin>}
+            ></Route>
             <Route path="/*" element={<Welcome></Welcome>}></Route>
           </Routes>
         </div>
@@ -243,8 +275,6 @@ function App() {
     </Spin>
   );
 }
-
-
 
 const initialNavbarData = [
   {
@@ -254,5 +284,4 @@ const initialNavbarData = [
   },
 ];
 
-
-export default App
+export default App;

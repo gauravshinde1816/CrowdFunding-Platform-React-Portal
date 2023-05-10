@@ -39,7 +39,17 @@ export default function Welcome(props) {
             <Button
               onClick={() => {
                 navigate("/createVendor");
-              }}>Join as Vendor</Button>
+              }}
+            >
+              Join as Vendor
+            </Button>
+            <Button
+              onClick={() => {
+                navigate("/createAdmin");
+              }}
+            >
+              Join as Admin
+            </Button>
           </div>
         </Card>
       </div>
