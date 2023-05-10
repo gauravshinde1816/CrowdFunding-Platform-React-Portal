@@ -60,7 +60,7 @@ export default function CreateSpendingRequest() {
       description: values.productDetails,
       target: ethers.utils.parseUnits(values.amount.toString(), 18),
       // yet to be replaced with 50 % of existing investors
-      minCount: 1,
+      minCount: 0,
       database_id: res.data,
     }
     await publishSpendingRequest(formObject)

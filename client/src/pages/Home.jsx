@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import InvestDrawer from "../components/InvestDrawer";
 import { getAllStartups } from "../config/Requests";
 
-export default function Home() {
+export default function Home({ user }) {
   const [investDrawerOpen, setInvestDrawerOpen] = useState(false);
   const [currentStatupDetails, setCurrentStatupDetails] = useState({});
   const [startups, setStartups] = useState([]);
@@ -32,7 +32,7 @@ export default function Home() {
         const res = await getAllStartups();
         setStartups(res.data);
         setLoading(false);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     setLoading(true);
@@ -96,13 +96,16 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="flex space-x-2">
-                        <Button
+
+
+                        {user.user.role === "INVESTOR" && <Button
                           type="primary"
                           onClick={() => openInvest(item)}
                           className="bg-blue-300"
                         >
                           Invest
-                        </Button>
+                        </Button>}
+
                         <Button
                           onClick={() => {
                             navigate("/startups/" + item._id);

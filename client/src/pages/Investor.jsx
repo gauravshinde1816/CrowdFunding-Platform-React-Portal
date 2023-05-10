@@ -3,6 +3,7 @@ import { Radio, Space, Table, Tag, Avatar, Divider, Spin, Button } from "antd";
 import { Descriptions } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useSpendingRequestContext } from "../context"
+import { useNavigate } from "react-router-dom"
 import { getSpendingRequestForInvestor, upvoteSpendingRequest, downvoteSpendingRequest } from "../config/Requests";
 import { formatDateWithYear } from "../config/Constants";
 import axios from "axios";
@@ -10,14 +11,14 @@ import axios from "axios";
 const calculatetotalinvestment = (data) => {
   let sum = 0;
   data.forEach((element) => {
-    sum += element.amount;
+    sum += element.totalAmountRaised;
   });
   return sum;
 };
 const Investor = ({ investorId, user }) => {
   const [spendingRequests, setSpendingRequests] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate()
   const { GetDBID, voteSP } = useSpendingRequestContext()
 
   const upvote = async (id) => {
@@ -25,6 +26,7 @@ const Investor = ({ investorId, user }) => {
     const SP = await GetDBID(id)
     const up = await voteSP(SP.pId, user.user.walletAddress)
     console.log(up)
+    navigate("/")
   }
 
   const downvote = async (id) => {
@@ -92,6 +94,9 @@ const Investor = ({ investorId, user }) => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (data) => {
+        return (data ? <span>✅︎</span> : <span>X</span>)
+      }
     },
     {
       title: "Action",
@@ -100,7 +105,8 @@ const Investor = ({ investorId, user }) => {
         const isPresent = record.votes.find((ele) => ele.user === record.user)
         console.log(record)
 
-        return (
+
+        return isPresent ? <Space>Voted ✅︎</Space> : (
           <Space size="middle">
             <Button disabled={isPresent} onClick={() => upvote(record._id)} className="bg-cyan-500 text-white">Accept</Button>
             <Button onClick={() => downvote(record._id)} className="bg-red-400 text-white">Reject</Button>
