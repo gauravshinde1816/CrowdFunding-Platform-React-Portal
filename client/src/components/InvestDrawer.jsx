@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"
 import { useSpendingRequestContext } from "../context"
 import {
   Alert,
@@ -22,8 +23,10 @@ export default function InvestDrawer({
 }) {
   const [spendingRequests, setSpendingRequests] = useState([]);
   const [investmentSuccessful, setInvestmentSuccessful] = useState(false);
-  const { GetSpendingRequests, donate, GetSpendingRequestByID } = useSpendingRequestContext()
+  const { GetSpendingRequests, donate, GetSpendingRequestByID, GetDBID } = useSpendingRequestContext()
 
+
+  const navigate = useNavigate()
 
   const closeInvest = () => {
     setInvestDrawerOpen(false);
@@ -39,9 +42,24 @@ export default function InvestDrawer({
   useEffect(() => {
     async function getSpendingRequests() {
       const res = await GetSpendingRequests();
-      console.log("Component : ", res)
+      // console.log(currentStatupDetails)
+      const filteredSP = []
+      const res1 = await getSpendingRequestForStartups(currentStatupDetails._id)
+      console.log("Res1 : ", res1)
+
+      await Promise.all(
+        res1.data.map(async (SP) => {
+          let t = await GetDBID(SP._id)
+          if (SP.isApproved) {
+            SP["pId"] = t["pId"]
+            filteredSP.push(SP)
+          }
+        })
+      )
+
+      console.log("Component : ", filteredSP)
       setLoading(false);
-      setSpendingRequests(res);
+      setSpendingRequests(filteredSP);
     }
 
     setLoading(true);
@@ -55,7 +73,7 @@ export default function InvestDrawer({
       const SP = await GetSpendingRequestByID(PID)
       console.log(SP)
       // values = { ...values, spending_request: SP.database_id, startupId: currentStatupDetails._id };
-      const invectOBJ = {amount : values.amount  , spendingRequestId: SP.database_id, startupId: currentStatupDetails._id}
+      const invectOBJ = { amount: values.amount, spendingRequestId: SP.database_id, startupId: currentStatupDetails._id }
       console.log(invectOBJ)
       const res = await invest(invectOBJ);
       const r = await donate(PID, values.amount)
@@ -63,6 +81,8 @@ export default function InvestDrawer({
       console.log("Invest message", r);
 
       console.log("database Save ", res)
+
+      navigate("/mystartups")
 
       setReceipt(r);
       setInvestmentSuccessful(true);
@@ -180,8 +200,8 @@ export default function InvestDrawer({
             <Form
               // layout="vertical"
               initialValues={{
-                amount: "password123",
-                spendingRequestId: spendingRequests[0]._id,
+                amount: 0,
+                spendingRequestId: "",
               }}
               onFinish={onFinish}
               onFinishFailed={() => { }}

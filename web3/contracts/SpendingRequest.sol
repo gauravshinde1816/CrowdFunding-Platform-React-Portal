@@ -86,6 +86,8 @@ contract SpendingRequestContract {
         return allCampaigns;
     }
 
+     
+
     function getAmountCollected(uint256 _id) public view returns (uint256) {
         SpendingRequest storage spendingRequest = SP[_id];
         return spendingRequest.amountCollected;

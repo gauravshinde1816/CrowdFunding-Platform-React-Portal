@@ -36,6 +36,30 @@ export const SpendingRequestContextProvider = ({ children }) => {
   }
 
 
+  const GetDBID = async (id) => {
+    console.log("Hello SP By ID", id)
+
+    const spendingRequests = await contract.call('getSP');
+
+    // console.log(spendingRequests)
+
+    const parsedSpendingRequests = spendingRequests.map((SP, i) => ({
+      recipient: SP.recipient,
+      title: SP.title,
+      description: SP.description,
+      target: ethers.utils.formatEther(SP.target.toString()),
+      minCount: SP.minCount,
+      approvals: SP.voters.length,
+      database_id: SP.database_id,
+      amountCollected: ethers.utils.formatEther(SP.amountCollected.toString()),
+      pId: i
+    }));
+
+    const SP = parsedSpendingRequests.find((ele) => ele.database_id === id)
+    return SP;
+  }
+
+
 
   const GetSpendingRequests = async () => {
 
@@ -50,6 +74,7 @@ export const SpendingRequestContextProvider = ({ children }) => {
       description: SP.description,
       target: ethers.utils.formatEther(SP.target.toString()),
       minCount: SP.minCount,
+      approvals: SP.voters.length,
       database_id: SP.database_id,
       amountCollected: ethers.utils.formatEther(SP.amountCollected.toString()),
       pId: i
@@ -69,7 +94,7 @@ export const SpendingRequestContextProvider = ({ children }) => {
 
   const GetSpendingRequestByID = async (id) => {
 
-    console.log("Hello SP By ID" , id)
+    console.log("Hello SP By ID", id)
     const spendingRequests = await contract.call('getSP');
 
     const parsedSpendingRequests = spendingRequests.map((SP, i) => {
@@ -97,7 +122,10 @@ export const SpendingRequestContextProvider = ({ children }) => {
   }
 
 
-
+  const voteSP = async (pId, voterAddress)=>{
+    const data = await contract.call('vote', pId, voterAddress);
+    return data
+  }
 
   return (<SpendingRequestContext.Provider value={{
     address,
@@ -106,8 +134,10 @@ export const SpendingRequestContextProvider = ({ children }) => {
     publishSpendingRequest,
     GetSpendingRequests,
     getAmountCollected,
-    GetSpendingRequestByID, 
+    GetSpendingRequestByID,
     donate,
+    GetDBID,
+    voteSP
   }}>
     {children}
   </SpendingRequestContext.Provider>)

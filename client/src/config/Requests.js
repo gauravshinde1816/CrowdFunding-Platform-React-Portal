@@ -40,14 +40,25 @@ export const loginWithToken = (token) =>
     },
   });
 
-export const invest = (data) =>
+export const invest = (data) => {
+  console.log(authHeaders);
   backend.post(
     "/investors/invest/" + data.startupId + "/" + data.spendingRequestId,
     data,
     authHeaders
   );
-export const getSpendingRequestForInvestor = () =>
-  backend.get("/spendingrequest/byInvestor", authHeaders());
+};
 
 export const getSpendingRequestForAdmin = () =>
   backend.get("/admin/spendingRequests", authHeaders());
+
+export const getSpendingRequestForInvestor = () =>
+  backend.get("/spendingrequest/byInvestor", authHeaders);
+
+export const upvoteSpendingRequest = (id) => {
+  backend.post("/spendingrequest/" + id + "/upvote", {}, authHeaders);
+};
+
+export const downvoteSpendingRequest = (id) => {
+  backend.put("/spendingrequest/" + id + "/downvote", {}, authHeaders);
+};
