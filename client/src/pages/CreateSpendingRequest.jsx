@@ -137,7 +137,7 @@ export default function CreateSpendingRequest() {
             <Input></Input>
           </Form.Item>
           <Form.Item
-            label="Amount to be raised (in $): "
+            label="Amount to be raised (in ETH / MATIC / SEPOLIA): "
             name={"amount"}
             rules={[{ required: true, message: "This field is required" }]}
           >

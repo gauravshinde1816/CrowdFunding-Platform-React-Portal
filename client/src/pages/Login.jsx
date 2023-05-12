@@ -63,6 +63,7 @@ const Login = ({ loginWithToken }) => {
         <Form.Item
           label="Password"
           name={"password"}
+          type = "password"
           rules={[
             {
               required: true,

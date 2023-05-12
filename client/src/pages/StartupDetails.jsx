@@ -56,7 +56,7 @@ const StartupDetails = () => {
           </Descriptions.Item>
         </Descriptions>
 
-        <Table columns={columns} dataSource={investments}></Table>
+        {/* <Table columns={columns} dataSource={investments}></Table> */}
       </div>
     </Spin>
   );

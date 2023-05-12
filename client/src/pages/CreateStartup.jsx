@@ -21,7 +21,7 @@ export default function CreateStartup() {
   const handleSubmit = async (values) => {
     try {
       const res = await createStartup(values);
-      navigate("/managerProfile");
+      navigate("/");
     } catch (e) {
       alert("Unable to create startup");
     }

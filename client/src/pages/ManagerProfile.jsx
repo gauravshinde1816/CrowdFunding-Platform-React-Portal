@@ -65,17 +65,7 @@ const columns = [
     title: "Creation Date",
     dataIndex: "createdAt",
     key: "createdAt",
-  },
-  {
-    title: "Expiry Date",
-    dataIndex: "expiryTime",
-    key: "expiryTime",
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-  },
+  }
 ];
 const dummyData = [
   {
@@ -134,7 +124,7 @@ export default function ManagerProfile({ user }) {
             navigate("/createSpendingRequest");
           }}
         >
-          Create Campaign
+          Create Spending Request
         </Button>
         <Button
           className="w-1/6 bg-blue-400 text-white"
