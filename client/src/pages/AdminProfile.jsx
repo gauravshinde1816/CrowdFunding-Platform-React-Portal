@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"
 import { Radio, Space, Table, Tag, Avatar, Divider, Spin, Button } from "antd";
 import { Descriptions } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import {
   getSpendingRequestForAdmin,
-  getSpendingRequestForInvestor,
+  approveSpendingRequest
 } from "../config/Requests";
 import { formatDateWithYear } from "../config/Constants";
 
@@ -18,6 +19,17 @@ const calculatetotalinvestment = (data) => {
 const AdminProfile = ({ investorId, user }) => {
   const [spendingRequests, setSpendingRequests] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
+
+  const upvote = async (id) => {
+    const res = await approveSpendingRequest(id);
+    console.log(res)
+    navigate("/")
+  }
+
+  const downvote = async (id) => {
+    const res = await downvoteSpendingRequest(id)
+  }
 
   useEffect(() => {
     async function getSpendingRequests() {
@@ -38,31 +50,30 @@ const AdminProfile = ({ investorId, user }) => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Start up Name",
-      dataIndex: "startupName",
-      key: "startupName",
+      title: "title",
+      dataIndex: "title",
+      key: "title",
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Campaign Manager Name",
-      dataIndex: "cmName",
-      key: "cmName",
+      title: "productDetails",
+      dataIndex: "productDetails",
+      key: "productDetails",
+      render: (text) => <a>{text}</a>,
     },
     {
-      title: "Vendor Name",
-      dataIndex: "vName",
-      key: "vName",
-    },
-    {
-      title: "Amount to be raised",
+      title: "amount",
       dataIndex: "amount",
       key: "amount",
+      render: (text) => <a>{text}</a>,
     },
     {
-      title: "Total Amount Raised",
+      title: "totalAmountRaised",
       dataIndex: "totalAmountRaised",
       key: "totalAmountRaised",
+      render: (text) => <a>{text}</a>,
     },
+
     {
       title: "Approvals",
       dataIndex: "approvals",
@@ -78,16 +89,27 @@ const AdminProfile = ({ investorId, user }) => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (data) => {
+        return (data ? <span>✅︎</span> : <span>X</span>)
+      }
     },
     {
       title: "Action",
       key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <Button className="bg-cyan-500 text-white">Accept</Button>
-          <Button className="bg-red-400 text-white">Reject</Button>
-        </Space>
-      ),
+      render: (_, record) => {
+        const isPresent = record.votes.find((ele) => ele.user === record.user)
+        const isApperoved = record.isApproved
+        console.log(record)
+
+
+        return isApperoved ? <Space>Approved ✅︎</Space> : (
+          <Space size="middle">
+            <Button disabled={isPresent} onClick={() => upvote(record._id)} className="bg-cyan-500 text-white">Accept</Button>
+            <Button onClick={() => downvote(record._id)} className="bg-red-400 text-white">Reject</Button>
+          </Space>
+        )
+      }
+      ,
     },
   ];
 
@@ -95,7 +117,7 @@ const AdminProfile = ({ investorId, user }) => {
     <div className="investor-profile space-y-3">
       <Divider orientation="left">
         <div className="text-cyan-600/60 text-5xl font-bold">
-          Investor Profile
+          Admin Profile
         </div>
       </Divider>
       <div className="grid grid-cols-5 p-4 rounded-xl py-4 border">

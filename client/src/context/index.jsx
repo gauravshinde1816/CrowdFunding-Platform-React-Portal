@@ -9,7 +9,7 @@ const SpendingRequestContext = createContext();
 
 
 export const SpendingRequestContextProvider = ({ children }) => {
-  const { contract } = useContract('0x5D1f10694E5d81d46325C3227fCf71925d97EdA7');
+  const { contract } = useContract('0xDC66ece433F1B4DeC47eA15Fe51DDA9971947Eb6');
   const { mutateAsync: createSpendingRequest } = useContractWrite(contract, 'createSpendingRequest');
 
   const address = useAddress();

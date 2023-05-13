@@ -47,10 +47,10 @@ contract SpendingRequestContract {
         uint256 amount = msg.value;
 
         SpendingRequest storage spendingRequest = SP[_id];
-        require(
-            spendingRequest.voters.length > spendingRequest.minCount,
-            "Approval Count Should be greater than min Count"
-        );
+        // require(
+        //     spendingRequest.voters.length > spendingRequest.minCount,
+        //     "Approval Count Should be greater than min Count"
+        // );
 
         spendingRequest.donators.push(msg.sender);
         spendingRequest.donations.push(amount);

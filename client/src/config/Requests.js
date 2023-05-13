@@ -45,7 +45,7 @@ export const invest = (data) => {
   backend.post(
     "/investors/invest/" + data.startupId + "/" + data.spendingRequestId,
     data,
-    authHeaders
+    authHeaders()
   );
 };
 
@@ -53,12 +53,17 @@ export const getSpendingRequestForAdmin = () =>
   backend.get("/admin/spendingRequests", authHeaders());
 
 export const getSpendingRequestForInvestor = () =>
-  backend.get("/spendingrequest/byInvestor", authHeaders);
+  backend.get("/spendingrequest/byInvestor", authHeaders());
 
 export const upvoteSpendingRequest = (id) => {
-  backend.post("/spendingrequest/" + id + "/upvote", {}, authHeaders);
+  backend.post("/spendingrequest/" + id + "/upvote", {}, authHeaders());
 };
 
 export const downvoteSpendingRequest = (id) => {
-  backend.put("/spendingrequest/" + id + "/downvote", {}, authHeaders);
+  backend.put("/spendingrequest/" + id + "/downvote", {}, authHeaders());
+};
+
+export const approveSpendingRequest = (id) => {
+  console.log(authHeaders)
+  backend.post("/spendingrequest/" + "status/" + id, {}, authHeaders());
 };
